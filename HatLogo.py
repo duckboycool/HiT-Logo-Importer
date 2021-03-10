@@ -7,10 +7,16 @@ import sys
 
 #Checking for dependencies.
 try:
-    import os, argparse, cv2
+    import os, argparse, cv2, datetime
 
-except ImportError:
-    print("You need opencv (https://pypi.org/project/opencv-python/) to run this script.")
+except ModuleNotFoundError as module:
+    #cv2 is not installed.
+    if module.name == 'cv2':
+        print("You need opencv (https://pypi.org/project/opencv-python/) to run this script.")
+    
+    else: #Should never be here (all other modules are standard lib), but will reraise error anyway.
+        raise module
+        
     sys.exit(-1)
 
 #Parsing input image filepath and target save file.
@@ -21,13 +27,13 @@ parser.add_argument('-im', type=str, help="The filepath to the image you want to
 
 paths = parser.parse_args()
 
-
 if os.path.exists(paths.save):
     savedata = open(paths.save, 'rb').read()
 
-    #Creating backup of save file so if import fails, the file won't be overwritten.
-    with open(paths.save.replace('.hat', '.bak'), 'wb') as backup:
-        backup.write(savedata)
+    #Creating backup of save file so if import fails, the file won't be lost.
+    if savedata: #Don't write if savedata is empty.
+        with open(f"{os.path.splitext(paths.save)[0]}-Backup-{datetime.date.today().strftime('%d-%m-%Y')}.bak", 'wb') as backup:
+            backup.write(savedata)
 
     save = open(paths.save, 'wb')
 
