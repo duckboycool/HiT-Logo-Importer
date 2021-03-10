@@ -22,8 +22,8 @@ except ModuleNotFoundError as module:
 #Parsing input image filepath and target save file.
 parser = argparse.ArgumentParser(description="Used to replace the sketches/logos on your save's passport with an image of your choice.")
 
-parser.add_argument('-save', type=str, help="The filepath to the save file you want to edit. Can be an absolute or relative path.")
-parser.add_argument('-im', type=str, help="The filepath to the image you want to replace the current one with. Can be an absolute or relative path.")
+parser.add_argument('-s', '--save', type=str, help="The filepath to the save file you want to edit. Can be an absolute or relative path.", required=True)
+parser.add_argument('-i', '--image', type=str, help="The filepath to the image you want to replace the current one with. Can be an absolute or relative path.", required=True)
 
 paths = parser.parse_args()
 
