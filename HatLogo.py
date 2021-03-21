@@ -28,7 +28,7 @@ parser.add_argument('-i', '--image', type=str, help="The filepath to the image y
 paths = parser.parse_args()
 
 if os.path.exists(paths.save):
-    savedata = open(paths.save, 'rb').read()
+    savedata = bytearray(open(paths.save, 'rb').read())
 
     #Creating backup of save file so if import fails, the file won't be lost.
     if savedata: #Don't write if savedata is empty.
@@ -39,7 +39,7 @@ if os.path.exists(paths.save):
 
 else: #Save file does not exist at path.
     print(f'Did not find save file at "{paths.save}". Make sure the path is correct, and use absolute path if your working directory isn\'t in the SaveData folder.')
-    sys.exit()
+    sys.exit(-1)
 
 try:
     image = cv2.imread(paths.image)
@@ -53,11 +53,7 @@ image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGBA), (512, 512), interpol
 start = savedata.index(b'SketchingData') + 44 #Getting index of start of image data.
 size = 512 ** 2
 
-outsave = savedata[:start] #Save data before image start.
+savedata[start:start + size] = bytearray(image) #Replace image data.
 
-outsave += bytes(image)
-
-outsave += savedata[start + 4 * size:] #Save data after image end.
-
-save.write(outsave)
+save.write(savedata)
 save.close()
