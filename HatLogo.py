@@ -41,17 +41,16 @@ else: #Save file does not exist at path.
     print(f'Did not find save file at "{paths.save}". Make sure the path is correct, and use absolute path if your working directory isn\'t in the SaveData folder.')
     sys.exit(-1)
 
-try:
-    image = cv2.imread(paths.image)
+image = cv2.imread(paths.image)
 
-except: #Image file does not exist at path.
+if image is None: #Image file does not exist at path.
     print(f'Did not find image at "{paths.image}". Make sure the path is correct, and use absolute path if your image isn\'t in your working directory.')
     sys.exit(-1)
 
 image = cv2.resize(cv2.cvtColor(image, cv2.COLOR_BGR2RGBA), (512, 512), interpolation=cv2.INTER_NEAREST) #Converting to format and size stored in .hat files.
 
 start = savedata.index(b'SketchingData') + 44 #Getting index of start of image data.
-size = 512 ** 2
+size = 4 * 512 ** 2
 
 savedata[start:start + size] = bytearray(image) #Replace image data.
 
